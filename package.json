@@ -1,0 +1,11 @@
+{
+  "name": "subjob",
+  "description": "Console and job system for Substrate based networks using polkadot.js (https://polkadot.js.org/api)",
+  "author": "Arif Kalayci <arif@finalbits.network>",
+  "dependencies": {
+    "@polkadot/api": "^1.25.1",
+    "bignumber.js": "^9.0.0",
+    "nodemailer": "^6.4.10",
+    "winston": "^3.3.3"
+  }
+}
