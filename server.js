@@ -4,6 +4,7 @@ const Repl = require("repl");
 const Runners = require('./models/Runners');
 const Plugins = require('./models/Plugins');
 const Channels = require('./models/Channels');
+const Accounts = require('./models/Accounts');
 
 function initContext(repl, socket) {
   const plugins = new Plugins(repl.context);
@@ -14,6 +15,9 @@ function initContext(repl, socket) {
 
   const runners = new Runners(repl.context, channels, socket);
   runners.load();
+
+  const accounts = new Accounts(repl.context);
+  accounts.load();
 }
 
 const server = net.createServer(socket => {
