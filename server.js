@@ -6,18 +6,20 @@ const Plugins = require('./models/Plugins');
 const Channels = require('./models/Channels');
 const Accounts = require('./models/Accounts');
 
-function initContext(repl, socket) {
-  const plugins = new Plugins(repl.context);
-  plugins.load();
+function subjobContext(socket) {
+  const accounts = new Accounts();
+  const accountsVars = accounts.load();
 
-  const channels = new Channels(repl.context);
-  channels.load();
+  const plugins = new Plugins();
+  const pluginsVars = plugins.load();
 
-  const runners = new Runners(repl.context, channels, socket);
-  runners.load();
+  const channels = new Channels();
+  const channelsVars = channels.load();
 
-  const accounts = new Accounts(repl.context);
-  accounts.load();
+  const runners = new Runners(channels, socket);
+  const runnersVars = runners.load();
+
+  return { accounts, ...accountsVars, plugins, ...pluginsVars, channels, ...channelsVars, runners, ...runnersVars };
 }
 
 const server = net.createServer(socket => {
@@ -29,9 +31,9 @@ const server = net.createServer(socket => {
     preview: false
   });
 
-  repl.on('reset', () => initContext(repl));
+  repl.on('reset', () => Object.assign(repl.context, subjobContext(socket)));
 
-  initContext(repl, socket);
+  Object.assign(repl.context, subjobContext(socket));
 
   socket.on("error", e => {
     console.error(`Socket error: ${e}`);

@@ -7,16 +7,15 @@ const winston = require('winston');
 const Runner = require('./Runner');
 
 class Runners extends Map {
-  constructor(context, channels, socket) {
+  constructor(channels, socket) {
     super();
-    this.context = context;
     this.channels = channels;
     this.socket = socket;
   }
 
   load() {
     this.clear();
-
+    const contextVars = {};
     let runnerFiles = readdirSync('runners', { withFileTypes: true }).filter(entry => entry.isFile() && /\.json$/gi.test(entry.name));
     for (let file of runnerFiles) {
       let runnerName = path.parse(file.name).name;
@@ -32,14 +31,14 @@ class Runners extends Map {
         });
 
         let runner = new Runner(wsProvider, this.channels, logger);
-        this.context[runnerName] = runner;
         this.set(runnerName, runner);
+        contextVars[runnerName] = runner;
       } catch (error) {
         console.info(`Error ${error.message}. Skipping installing runner '${runnerName}'`);
       }
     }
 
-    this.context['runners'] = this;
+    return contextVars;
   }
 }
 

@@ -5,14 +5,9 @@ const TelegramChannel = require('./TelegramChannel');
 const EmailChannel = require('./EmailChannel');
 
 class Channels extends Map {
-  constructor(context) {
-    super();
-    this.context = context;
-  }
-
   load() {
     this.clear();
-
+    const contextVars = {};
     let channelFiles = readdirSync('channels', { withFileTypes: true }).filter(entry => entry.isFile() && /\.json$/gi.test(entry.name));
     for (let file of channelFiles) {
       let channelName = path.parse(file.name).name;
@@ -34,14 +29,14 @@ class Channels extends Map {
           }
         }
 
-        this.context[channelName] = channel;
         this.set(channelName, channel);
+        contextVars[channelName] = channel;
       } catch(error) {
         console.info(`Error: ${error.message}. Skipping installing channel '${channelName}'.`);
       }
     }
 
-    this.context['channels'] = this;
+    return contextVars;
   }
 
   send(message) {
