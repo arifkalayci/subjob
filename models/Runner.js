@@ -6,19 +6,12 @@ class Runner {
     this.channels = channels;
     this.logger = logger;
     this.jobs = [];
+
+    this._api = new ApiPromise({ provider: this.provider });
   }
 
-  async init() {
-    this._api = await ApiPromise.create({ provider: this.provider });
-    return this._api;
-  }
-
-  subHeads() {
-    return this.api.rpc.chain.subscribeFinalizedHeads(header => { this.onNewHead(header.hash) });
-  }
-
-  get api() {
-    return this._api;
+  api() {
+    return this._api.isReady;
   }
 
   runJob(plugin, blockHash, ...args) {
