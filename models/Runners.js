@@ -22,7 +22,7 @@ class Runners extends Map {
       try {
         let config = JSON.parse(readFileSync(`runners/${file.name}`, 'utf-8'));
 
-        const wsProvider = new WsProvider(config.wsProviderUrl);
+        const wsProvider = new WsProvider(config.wsProviderUrl, false);
 
         let logger = winston.createLogger({
           transports: [

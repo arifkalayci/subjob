@@ -11,6 +11,7 @@ class Runner {
   }
 
   api() {
+    this.provider.connect();
     return this._api.isReady;
   }
 
