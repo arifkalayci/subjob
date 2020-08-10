@@ -6,6 +6,10 @@ const Plugins = require('./models/Plugins');
 const Channels = require('./models/Channels');
 const Accounts = require('./models/Accounts');
 
+const path = require('path');
+const os = require('os');
+const HISTORY_FILE_NAME = '.subjob_history';
+
 function subjobContext(socket) {
   const accounts = new Accounts();
   const accountsVars = accounts.load();
@@ -29,6 +33,12 @@ const server = net.createServer(socket => {
     output: socket,
     terminal: true,
     preview: false
+  });
+
+  repl.setupHistory(path.join(os.homedir(), HISTORY_FILE_NAME), err => {
+    if (err) {
+      console.error(err);
+    }
   });
 
   repl.defineCommand('reload', {
