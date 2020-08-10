@@ -31,7 +31,16 @@ const server = net.createServer(socket => {
     preview: false
   });
 
-  repl.on('reset', () => Object.assign(repl.context, subjobContext(socket)));
+  repl.defineCommand('reload', {
+    help: 'Reload the context with all accounts, channels, plugins and runners',
+    action() {
+      this.clearBufferedCommand();
+      socket.write(`Reloading context...\n`);
+      this.resetContext();
+      Object.assign(this.context, subjobContext(socket));
+      this.displayPrompt();
+    }
+  });
 
   Object.assign(repl.context, subjobContext(socket));
 
