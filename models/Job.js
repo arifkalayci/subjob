@@ -1,4 +1,4 @@
-AsyncFunction = Object.getPrototypeOf(async function(){}).constructor;
+const AsyncFunction = Object.getPrototypeOf(async function(){}).constructor;
 
 class Job {
   constructor(code, parameters, api, channels, logger, ...args) {
