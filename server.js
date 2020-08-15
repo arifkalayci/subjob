@@ -32,7 +32,8 @@ const server = net.createServer(socket => {
     input: socket,
     output: socket,
     terminal: true,
-    preview: false
+    preview: false,
+    historySize: 1000
   });
 
   repl.setupHistory(path.join(os.homedir(), HISTORY_FILE_NAME), err => {
