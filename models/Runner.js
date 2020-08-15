@@ -15,8 +15,8 @@ class Runner {
     return this._api.isReady;
   }
 
-  runJob(plugin, blockHash, ...args) {
-    const job = plugin.newJob(this, ...args);
+  async runJob(plugin, blockHash, ...args) {
+    const job = await plugin.newJob(this, ...args);
     job.run(blockHash).then(ret => { job.returnValue = ret}).catch(err => this.logger.error(err.message));
 
     return job;
