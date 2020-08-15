@@ -11,7 +11,10 @@ class Runner {
   }
 
   api() {
-    this.provider.connect();
+    if (!this.provider.isConnected()) {
+      this.provider.connect();
+    }
+
     return this._api.isReady;
   }
 
