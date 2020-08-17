@@ -20,7 +20,7 @@ class Runner {
 
   async runJob(plugin, blockHash, ...args) {
     const job = await plugin.newJob(this, ...args);
-    job.run(blockHash).then(ret => { job.returnValue = ret}).catch(err => this.logger.error(err.message));
+    job.run(blockHash);
 
     return job;
   }
