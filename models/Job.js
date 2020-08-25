@@ -1,14 +1,15 @@
 const AsyncFunction = Object.getPrototypeOf(async function(){}).constructor;
 
 class Job {
-  constructor(code, parameters, api, channels, logger, ...args) {
+  constructor(code, parameters, api, runner, logger, ...args) {
+    this.runner = runner;
     this.logger = logger;
 
     const funcParams = [...parameters];
     funcParams.unshift('require', 'api', 'channels', 'logger');
     funcParams.push('blockHash');
 
-    args.unshift(require, api, channels, logger);
+    args.unshift(require, api, runner.channels, logger);
 
     this._func = new AsyncFunction(...funcParams, code).bind(this, ...args);
   }
@@ -19,6 +20,10 @@ class Job {
     } catch (err) {
       this.logger.error(err.message)
     }
+  }
+
+  remove() {
+    this.runner.removeJob(this);
   }
 }
 

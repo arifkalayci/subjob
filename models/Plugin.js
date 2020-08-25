@@ -12,7 +12,7 @@ class Plugin {
     // }
 
     const api = await runner.api();
-    return new Job(this.code, this.parameters, api, runner.channels, logger, ...args);
+    return new Job(this.code, this.parameters, api, runner, logger, ...args);
   }
 }
 
