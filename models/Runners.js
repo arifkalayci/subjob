@@ -2,8 +2,6 @@ const { WsProvider } = require('@polkadot/api');
 const { readdirSync, readFileSync } = require('fs');
 const path = require('path');
 
-const winston = require('winston');
-
 const Runner = require('./Runner');
 
 class Runners extends Map {
@@ -24,13 +22,7 @@ class Runners extends Map {
 
         const wsProvider = new WsProvider(config.wsProviderUrl, false);
 
-        let logger = winston.createLogger({
-          transports: [
-            new winston.transports.Stream({ stream: this.socket })
-          ]
-        });
-
-        let runner = new Runner(wsProvider, this.channels, logger);
+        let runner = new Runner(wsProvider, this.channels, this.socket);
         this.set(runnerName, runner);
         contextVars[runnerName] = runner;
       } catch (error) {

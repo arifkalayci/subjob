@@ -1,10 +1,12 @@
 const { ApiPromise } = require('@polkadot/api');
 
+const winston = require('winston');
+
 class Runner {
-  constructor(provider, channels, logger) {
+  constructor(provider, channels, socket) {
     this.provider = provider;
     this.channels = channels;
-    this.logger = logger;
+    this.socket = socket;
     this.jobs = [];
 
     this._api = new ApiPromise({ provider: this.provider });
@@ -37,14 +39,26 @@ class Runner {
   }
 
   async runJob(plugin, blockHash, ...args) {
-    const job = await plugin.newJob(this, ...args);
+    const logger = winston.createLogger({
+      transports: [
+        new winston.transports.Stream({ stream: this.socket })
+      ]
+    });
+
+    const job = await plugin.newJob(this, logger, ...args);
     job.run(blockHash);
 
     return job;
   }
 
   async addJob(plugin, ...args) {
-    const job = await plugin.newJob(this, ...args);
+    const logger = winston.createLogger({
+      transports: [
+        new winston.transports.File({ filename: 'logs/run.log' })
+      ]
+    });
+
+    const job = await plugin.newJob(this, logger, ...args);
 
     job.runCount = 0;
     this.jobs.push(job);

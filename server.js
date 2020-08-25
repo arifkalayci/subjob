@@ -10,6 +10,14 @@ const path = require('path');
 const os = require('os');
 const HISTORY_FILE_NAME = '.subjob_history';
 
+const LOG_DIR_NAME = 'logs';
+
+const fs = require('fs');
+
+if (!fs.existsSync(LOG_DIR_NAME)) {
+  fs.mkdirSync(LOG_DIR_NAME);
+}
+
 function subjobContext(socket) {
   const accounts = new Accounts();
   const accountsVars = accounts.load();

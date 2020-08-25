@@ -6,13 +6,13 @@ class Plugin {
     this.code = code;
   }
 
-  async newJob(runner, ...args) {
+  async newJob(runner, logger, ...args) {
     // if (args.length !== this.parameters.length) {
     //   throw new Error("Wrong number of parameters");
     // }
 
     const api = await runner.api();
-    return new Job(this.code, this.parameters, api, runner.channels, runner.logger, ...args);
+    return new Job(this.code, this.parameters, api, runner.channels, logger, ...args);
   }
 }
 
