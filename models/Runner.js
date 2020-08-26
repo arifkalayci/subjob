@@ -2,6 +2,8 @@ const { ApiPromise } = require('@polkadot/api');
 
 const winston = require('winston');
 
+const colors = require('colors');
+
 class Runner {
   constructor(provider, channels, socket) {
     this.provider = provider;
@@ -46,7 +48,7 @@ class Runner {
           format: winston.format.combine(
             winston.format.colorize(),
             winston.format.timestamp(),
-            winston.format.printf(({level, message, timestamp}) => `${timestamp} [${plugin.name}] ${level}: ${message}`)
+            winston.format.printf(({level, message, timestamp}) => `${timestamp} [${plugin.name.bold.blue}] ${level}: ${message}`)
           )
         })
       ]
