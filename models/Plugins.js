@@ -24,7 +24,7 @@ class Plugins extends Map {
           }
         }
 
-        let plugin = new Plugin(manifest.parameters, code);
+        let plugin = new Plugin(pluginName, manifest.parameters, code);
         this.set(pluginName, plugin);
         contextVars[pluginName] = plugin;
       } catch (error) {

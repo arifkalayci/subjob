@@ -1,7 +1,8 @@
 const Job = require('./Job');
 
 class Plugin {
-  constructor(parameters, code) {
+  constructor(name, parameters, code) {
+    this.name = name;
     this.parameters = parameters || [];
     this.code = code;
   }
@@ -13,6 +14,10 @@ class Plugin {
 
     const api = await runner.api();
     return new Job(this.code, this.parameters, api, runner, logger, ...args);
+  }
+
+  get name() {
+    return this.name;
   }
 }
 
