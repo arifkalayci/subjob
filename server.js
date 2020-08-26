@@ -1,6 +1,7 @@
 const net = require("net");
 const Repl = require("repl");
 
+const Jobs = require('./models/Jobs');
 const Runners = require('./models/Runners');
 const Plugins = require('./models/Plugins');
 const Channels = require('./models/Channels');
@@ -34,6 +35,8 @@ function subjobContext(socket) {
   return { accounts, ...accountsVars, plugins, ...pluginsVars, channels, ...channelsVars, runners, ...runnersVars };
 }
 
+global.jobs = new Jobs();
+
 const server = net.createServer(socket => {
   const repl = Repl.start({
     prompt: '\x1b[36m>> \x1b[0m',
@@ -60,6 +63,10 @@ const server = net.createServer(socket => {
       this.displayPrompt();
     }
   });
+
+  repl.context.listJobs = global.jobs.list.bind(global.jobs, repl.context.console);
+  repl.context.removeJob = global.jobs.remove.bind(global.jobs);
+  repl.context.clearJobs = global.jobs.clear.bind(global.jobs);
 
   Object.assign(repl.context, subjobContext(socket));
 

@@ -63,6 +63,8 @@ class Runner {
     job.runCount = 0;
     this.jobs.push(job);
 
+    global.jobs.add(job);
+
     if (this.jobs.length === 1) {
       this._subHeads();
     }
