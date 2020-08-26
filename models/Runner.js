@@ -41,7 +41,14 @@ class Runner {
   async runJob(plugin, blockHash, ...args) {
     const logger = winston.createLogger({
       transports: [
-        new winston.transports.Stream({ stream: this.socket })
+        new winston.transports.Stream({
+          stream: this.socket,
+          format: winston.format.combine(
+            winston.format.colorize(),
+            winston.format.timestamp(),
+            winston.format.printf(({level, message, timestamp}) => `${timestamp} [${plugin.name}] ${level}: ${message}`)
+          )
+        })
       ]
     });
 
@@ -54,7 +61,13 @@ class Runner {
   async addJob(plugin, ...args) {
     const logger = winston.createLogger({
       transports: [
-        new winston.transports.File({ filename: 'logs/run.log' })
+        new winston.transports.File({
+          filename: 'logs/run.log' ,
+          format: winston.format.combine(
+            winston.format.timestamp(),
+            winston.format.printf(({level, message, timestamp}) => `${timestamp} [${plugin.name}] ${level}: ${message}`)
+          )
+        })
       ]
     });
 

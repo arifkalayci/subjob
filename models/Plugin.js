@@ -2,7 +2,7 @@ const Job = require('./Job');
 
 class Plugin {
   constructor(name, parameters, code) {
-    this.name = name;
+    this._name = name;
     this.parameters = parameters || [];
     this.code = code;
   }
@@ -17,7 +17,7 @@ class Plugin {
   }
 
   get name() {
-    return this.name;
+    return this._name;
   }
 }
 
