@@ -5,12 +5,8 @@ class Job {
     this.runner = runner;
     this.logger = logger;
 
-    const funcParams = [...parameters];
-    funcParams.unshift('require', 'api', 'channels', 'logger');
-    funcParams.push('blockHash');
-
+    const funcParams = ['require', 'api', 'channels', 'logger', ...parameters, 'blockHash'];
     args.unshift(require, api, runner.channels, logger);
-
     this._func = new AsyncFunction(...funcParams, code).bind(this, ...args);
   }
 
