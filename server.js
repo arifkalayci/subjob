@@ -19,22 +19,6 @@ if (!fs.existsSync(LOG_DIR_NAME)) {
   fs.mkdirSync(LOG_DIR_NAME);
 }
 
-function subjobContext(socket) {
-  const accounts = new Accounts();
-  const accountsVars = accounts.load();
-
-  const plugins = new Plugins();
-  const pluginsVars = plugins.load();
-
-  const channels = new Channels();
-  const channelsVars = channels.load();
-
-  const runners = new Runners(channels, socket);
-  const runnersVars = runners.load();
-
-  return { accounts, ...accountsVars, plugins, ...pluginsVars, channels, ...channelsVars, runners, ...runnersVars };
-}
-
 global.jobs = new Jobs();
 
 const server = net.createServer(socket => {
@@ -53,22 +37,48 @@ const server = net.createServer(socket => {
     }
   });
 
+  function subjobContext() {
+    const accounts = new Accounts();
+    const accountsVars = accounts.load();
+
+    const plugins = new Plugins();
+    const pluginsVars = plugins.load();
+
+    const channels = new Channels();
+    const channelsVars = channels.load();
+
+    const runners = new Runners(channels, socket);
+    const runnersVars = runners.load();
+
+    return {
+      listJobs: global.jobs.list.bind(global.jobs, repl.context.console),
+      removeJob: global.jobs.remove.bind(global.jobs),
+      clearJobs: global.jobs.clear.bind(global.jobs),
+      accounts,
+      ...accountsVars,
+      plugins,
+      ...pluginsVars,
+      channels,
+      ...channelsVars,
+      runners,
+      ...runnersVars
+    };
+  }
+
   repl.defineCommand('reload', {
     help: 'Reload the context with all accounts, channels, plugins and runners',
     action() {
       this.clearBufferedCommand();
       socket.write(`Reloading context...\n`);
+
       this.resetContext();
-      Object.assign(this.context, subjobContext(socket));
+      Object.assign(this.context, subjobContext());
+
       this.displayPrompt();
     }
   });
 
-  repl.context.listJobs = global.jobs.list.bind(global.jobs, repl.context.console);
-  repl.context.removeJob = global.jobs.remove.bind(global.jobs);
-  repl.context.clearJobs = global.jobs.clear.bind(global.jobs);
-
-  Object.assign(repl.context, subjobContext(socket));
+  Object.assign(repl.context, subjobContext());
 
   socket.on("error", e => {
     console.error(`Socket error: ${e}`);
