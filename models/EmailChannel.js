@@ -24,7 +24,7 @@ class EmailChannel {
       text: message
     };
 
-    this.transport.sendMail(options).then(info => { console.log(`Message sent. id: ${info.messageId}`); });
+    this.transport.sendMail(options);
   }
 }
 
