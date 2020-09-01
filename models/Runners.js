@@ -26,7 +26,7 @@ class Runners extends Map {
         this.set(runnerName, runner);
         contextVars[runnerName] = runner;
       } catch (error) {
-        console.info(`Error ${error.message}. Skipping installing runner '${runnerName}'`);
+        logger.error(`Error ${error.message}. Skipping installing runner '${runnerName}'`);
       }
     }
 

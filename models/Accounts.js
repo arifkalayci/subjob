@@ -14,7 +14,7 @@ class Accounts extends Map {
         this.set(accountName, account);
         contextVars[accountName] = account;
       } catch(error) {
-        console.info(`Error: ${error.message}. Skipping installing account '${accountName}'.`);
+        logger.error(`${error.message}. Skipping installing account '${accountName}'.`);
       }
     }
 

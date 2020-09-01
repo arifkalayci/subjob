@@ -20,7 +20,7 @@ class Plugins extends Map {
           try {
             code = readFileSync(`plugins/${dir.name}/${manifest.sourceFile}`, 'utf-8');
           } catch(error) {
-            console.info(`Cannot read ${manifest.sourceFile}. Skipping installing plugin '${pluginName}'`);
+            logger.error(`Cannot read ${manifest.sourceFile}. Skipping installing plugin '${pluginName}'`);
           }
         }
 
@@ -28,7 +28,7 @@ class Plugins extends Map {
         this.set(pluginName, plugin);
         contextVars[pluginName] = plugin;
       } catch (error) {
-        console.info(`Error: ${error.message}. Skipping processing plugin directory '${dir.name}'.`);
+        logger.error(`${error.message}. Skipping processing plugin directory '${dir.name}'.`);
       }
     }
 

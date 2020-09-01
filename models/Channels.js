@@ -32,7 +32,7 @@ class Channels extends Map {
         this.set(channelName, channel);
         contextVars[channelName] = channel;
       } catch(error) {
-        console.info(`Error: ${error.message}. Skipping installing channel '${channelName}'.`);
+        logger.error(`${error.message}. Skipping installing channel '${channelName}'.`);
       }
     }
 

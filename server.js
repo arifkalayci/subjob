@@ -15,9 +15,23 @@ const LOG_DIR_NAME = 'logs';
 
 const fs = require('fs');
 
+const winston = require('winston');
+
 if (!fs.existsSync(LOG_DIR_NAME)) {
   fs.mkdirSync(LOG_DIR_NAME);
 }
+
+global.logger = winston.createLogger({
+  transports: [
+    new winston.transports.Console({
+      stderrLevels: ['error'],
+      format: winston.format.combine(
+        winston.format.timestamp(),
+        winston.format.printf(({level, message, timestamp}) => `${timestamp} ${level.toUpperCase()}: ${message}`)
+      )
+    })
+  ]
+});
 
 global.jobs = new Jobs();
 
@@ -33,7 +47,7 @@ const server = net.createServer(socket => {
 
   repl.setupHistory(path.join(os.homedir(), HISTORY_FILE_NAME), err => {
     if (err) {
-      console.error(err);
+      logger.error(err);
     }
   });
 
@@ -81,11 +95,11 @@ const server = net.createServer(socket => {
   Object.assign(repl.context, subjobContext());
 
   socket.on("error", e => {
-    console.error(`Socket error: ${e}`);
+    logger.error(`Socket error: ${e}`);
   });
 
   repl.on("exit", () => {
-    console.log("Client disconnected");
+    logger.info("Client disconnected");
     socket.end();
   });
 });
@@ -95,5 +109,5 @@ server.on('error', (err) => {
 });
 
 server.listen(7953, () => {
-  console.log('server bound');
+  logger.info('Server bound');
 });
