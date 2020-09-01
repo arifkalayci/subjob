@@ -17,6 +17,8 @@ const fs = require('fs');
 
 const winston = require('winston');
 
+const colors = require('colors');
+
 if (!fs.existsSync(LOG_DIR_NAME)) {
   fs.mkdirSync(LOG_DIR_NAME);
 }
@@ -37,7 +39,7 @@ global.jobs = new Jobs();
 
 const server = net.createServer(socket => {
   const repl = Repl.start({
-    prompt: '\x1b[36m>> \x1b[0m',
+    prompt: '>> '.brightBlue,
     input: socket,
     output: socket,
     terminal: true,
