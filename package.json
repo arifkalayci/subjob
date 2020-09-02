@@ -6,6 +6,7 @@
     "@polkadot/api": "^1.25.1",
     "bignumber.js": "^9.0.0",
     "nodemailer": "^6.4.10",
+    "twitter-lite": "^0.14.0",
     "winston": "^3.3.3"
   },
   "scripts": {

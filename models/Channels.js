@@ -3,6 +3,7 @@ const path = require('path');
 
 const TelegramChannel = require('./TelegramChannel');
 const EmailChannel = require('./EmailChannel');
+const TwitterChannel = require('./TwitterChannel');
 
 class Channels extends Map {
   load() {
@@ -22,6 +23,10 @@ class Channels extends Map {
           }
           case 'email': {
             channel = new EmailChannel(config.host, config.port, config.user, config.pass, config.from, config.to, config.subject);
+            break;
+          }
+          case 'twitter': {
+            channel = new TwitterChannel(config.consumerKey, config.consumerSecret, config.accessTokenKey, config.accessTokenSecret);
             break;
           }
           default: {
