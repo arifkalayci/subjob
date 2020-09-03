@@ -1,13 +1,14 @@
 const AsyncFunction = Object.getPrototypeOf(async function(){}).constructor;
 
 class Job {
-  constructor(code, parameters, api, runner, logger, ...args) {
+  constructor(plugin, api, runner, logger, ...args) {
+    this.plugin = plugin;
     this.runner = runner;
     this.logger = logger;
 
-    const funcParams = ['require', 'api', 'channels', 'logger', ...parameters, 'blockHash'];
+    const funcParams = ['require', 'api', 'channels', 'logger', ...this.plugin.parameters, 'blockHash'];
     args.unshift(require, api, runner.channels, logger);
-    this._func = new AsyncFunction(...funcParams, code).bind(this, ...args);
+    this._func = new AsyncFunction(...funcParams, this.plugin.code).bind(this, ...args);
   }
 
   async run(blockHash) {
