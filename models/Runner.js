@@ -5,13 +5,18 @@ const winston = require('winston');
 const colors = require('colors');
 
 class Runner {
-  constructor(provider, channels, socket) {
+  constructor(name, provider, channels, socket) {
+    this._name = name;
     this.provider = provider;
     this.channels = channels;
     this.socket = socket;
     this.jobs = [];
 
     this._api = new ApiPromise({ provider: this.provider });
+  }
+
+  get name() {
+    return this._name;
   }
 
   api() {

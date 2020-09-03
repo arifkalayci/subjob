@@ -22,7 +22,7 @@ class Runners extends Map {
 
         const wsProvider = new WsProvider(config.wsProviderUrl, false);
 
-        let runner = new Runner(wsProvider, this.channels, this.socket);
+        let runner = new Runner(runnerName, wsProvider, this.channels, this.socket);
         this.set(runnerName, runner);
         contextVars[runnerName] = runner;
       } catch (error) {
