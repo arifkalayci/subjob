@@ -1,10 +1,14 @@
 const AsyncFunction = Object.getPrototypeOf(async function(){}).constructor;
 
+const moment = require('moment');
+
 class Job {
   constructor(plugin, api, runner, logger, ...args) {
     this.plugin = plugin;
     this.runner = runner;
     this.logger = logger;
+    this.args = [...args];
+    this.addedAt = moment();
 
     const funcParams = ['require', 'api', 'channels', 'logger', ...this.plugin.parameters, 'blockHash'];
     args.unshift(require, api, runner.channels, logger);
@@ -21,6 +25,15 @@ class Job {
 
   remove() {
     this.runner.removeJob(this);
+  }
+
+  toHuman() {
+    return {
+      pluginName: this.plugin.name,
+      runnerName: this.runner.name,
+      arguments: this.args,
+      addedAt: this.addedAt.format('D/M/Y HH:MM:SS')
+    }
   }
 }
 

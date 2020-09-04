@@ -8,7 +8,7 @@ class Jobs {
   }
 
   list(cl) {
-    cl.table(this._jobs);
+    cl.table(this._jobs.map(job => job.toHuman()));
   }
 
   remove(job) {
