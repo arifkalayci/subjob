@@ -2,14 +2,16 @@ const { readdirSync, readFileSync } = require('fs');
 
 const Plugin = require('./Plugin');
 
+const { PLUGINS_DIR_NAME } = require('../constants');
+
 class Plugins extends Map {
   load() {
     this.clear();
     const contextVars = {};
-    let pluginDirs = readdirSync('plugins', { withFileTypes: true }).filter(dirent => dirent.isDirectory());
+    let pluginDirs = readdirSync(PLUGINS_DIR_NAME, { withFileTypes: true }).filter(dirent => dirent.isDirectory());
     for (let dir of pluginDirs) {
       try {
-        let manifest = JSON.parse(readFileSync(`plugins/${dir.name}/manifest.json`, 'utf-8'));
+        let manifest = JSON.parse(readFileSync(`${PLUGINS_DIR_NAME}/${dir.name}/manifest.json`, 'utf-8'));
 
         let pluginName = manifest.name || dir.name;
 

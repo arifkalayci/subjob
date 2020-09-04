@@ -5,15 +5,17 @@ const TelegramChannel = require('./TelegramChannel');
 const EmailChannel = require('./EmailChannel');
 const TwitterChannel = require('./TwitterChannel');
 
+const { CHANNELS_DIR_NAME } = require('../constants');
+
 class Channels extends Map {
   load() {
     this.clear();
     const contextVars = {};
-    let channelFiles = readdirSync('channels', { withFileTypes: true }).filter(entry => entry.isFile() && /\.json$/gi.test(entry.name));
+    let channelFiles = readdirSync(CHANNELS_DIR_NAME, { withFileTypes: true }).filter(entry => entry.isFile() && /\.json$/gi.test(entry.name));
     for (let file of channelFiles) {
       let channelName = path.parse(file.name).name;
       try {
-        let config = JSON.parse(readFileSync(`channels/${file.name}`, 'utf-8'));
+        let config = JSON.parse(readFileSync(`${CHANNELS_DIR_NAME}/${file.name}`, 'utf-8'));
 
         let channel;
         switch (config.type) {

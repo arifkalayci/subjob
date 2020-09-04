@@ -11,7 +11,7 @@ const path = require('path');
 const os = require('os');
 const HISTORY_FILE_NAME = '.subjob_history';
 
-const LOG_DIR_NAME = 'logs';
+const { LOG_DIR_NAME, ACCOUNTS_DIR_NAME, CHANNELS_DIR_NAME, PLUGINS_DIR_NAME, RUNNERS_DIR_NAME } = require('./constants');
 
 const fs = require('fs');
 
@@ -19,9 +19,11 @@ const winston = require('winston');
 
 const colors = require('colors');
 
-if (!fs.existsSync(LOG_DIR_NAME)) {
-  fs.mkdirSync(LOG_DIR_NAME);
-}
+[LOG_DIR_NAME, ACCOUNTS_DIR_NAME, CHANNELS_DIR_NAME, PLUGINS_DIR_NAME, RUNNERS_DIR_NAME].forEach(dirName => {
+  if (!fs.existsSync(dirName)) {
+    fs.mkdirSync(dirName);
+  }
+})
 
 global.logger = winston.createLogger({
   transports: [
