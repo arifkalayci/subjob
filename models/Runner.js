@@ -5,11 +5,11 @@ const winston = require('winston');
 const colors = require('colors');
 
 class Runner {
-  constructor(name, provider, channels, socket) {
+  constructor(name, provider, channels, stream) {
     this._name = name;
     this.provider = provider;
     this.channels = channels;
-    this.socket = socket;
+    this._stream = stream;
     this.jobs = [];
 
     this._api = new ApiPromise({ provider: this.provider });
@@ -49,7 +49,7 @@ class Runner {
     const logger = winston.createLogger({
       transports: [
         new winston.transports.Stream({
-          stream: this.socket,
+          stream: this._stream,
           format: winston.format.combine(
             winston.format.colorize(),
             winston.format.timestamp(),

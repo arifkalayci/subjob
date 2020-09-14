@@ -13,8 +13,8 @@ const Accounts = require('./Accounts');
 const HISTORY_FILE_NAME = '.subjob_history';
 
 class SubjobRepl {
-  constructor(socket) {
-    this._socket = socket;
+  constructor(stream) {
+    this._stream = stream;
     global.jobs = new Jobs();
   }
 
@@ -28,7 +28,7 @@ class SubjobRepl {
     const channels = new Channels();
     const channelsVars = channels.load();
 
-    const runners = new Runners(channels, this._socket);
+    const runners = new Runners(channels, this._stream);
     const runnersVars = runners.load();
 
     return {
@@ -49,8 +49,8 @@ class SubjobRepl {
   start() {
     this._repl = Repl.start({
       prompt: '>> '.brightBlue,
-      input: this._socket,
-      output: this._socket,
+      input: this._stream,
+      output: this._stream,
       terminal: true,
       preview: false,
       historySize: 1000
@@ -68,7 +68,7 @@ class SubjobRepl {
       help: 'Reload the context with all accounts, channels, plugins and runners',
       action() {
         this._repl.clearBufferedCommand();
-        this._socket.write(`Reloading context...\n`);
+        this._stream.write(`Reloading context...\n`);
 
         this._repl.resetContext();
         Object.assign(this._repl.context, this.subjobContext());
@@ -79,7 +79,7 @@ class SubjobRepl {
 
     this._repl.on("exit", () => {
       logger.info("Client disconnected");
-      this._socket.end();
+      this._stream.end();
     });
   }
 }

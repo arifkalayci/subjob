@@ -1,4 +1,5 @@
-const net = require("net");
+const ssh2 = require('ssh2');
+const crypto = require('crypto');
 
 const winston = require('winston');
 
@@ -25,18 +26,52 @@ global.logger = winston.createLogger({
   ]
 });
 
-const server = net.createServer(socket => {
-  new SubjobRepl(socket).start();
+const config = JSON.parse(fs.readFileSync('config.json'));
 
-  socket.on("error", e => {
-    logger.error(`Socket error: ${e}`);
+const allowedUser = Buffer.from(config.user);
+const allowedPassword = Buffer.from(config.password);
+
+const server = new ssh2.Server({
+  hostKeys: [fs.readFileSync('host.key')]
+});
+
+server.on('connection', (client, info) => {
+  client.on('authentication', (ctx) => {
+    const user = Buffer.from(ctx.username);
+    if (user.length !== allowedUser.length || !crypto.timingSafeEqual(user, allowedUser)) {
+      return ctx.reject();
+    }
+
+    switch (ctx.method) {
+      case 'password':
+        const password = Buffer.from(ctx.password);
+        if (password.length !== allowedPassword.length || !crypto.timingSafeEqual(password, allowedPassword)) {
+          return ctx.reject();
+        }
+        break;
+      default:
+        return ctx.reject();
+    }
+
+    ctx.accept();
+  });
+
+  client.once('ready', () => {
+    client.on('session', (accept, reject) => {
+      const session = accept();
+
+      session.once('pty', (accept, reject, info) => {
+        accept();
+      });
+
+      session.once('shell', (accept, reject) => {
+        const stream = accept();
+        new SubjobRepl(stream).start();
+      });
+    });
   });
 });
 
-server.on('error', (err) => {
-  throw err;
-});
-
-server.listen(7953, () => {
-  logger.info('Server bound');
+server.listen(7953, '0.0.0.0', () => {
+  console.log(`Listening on port ${server.address().port}`);
 });
