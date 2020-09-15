@@ -8,6 +8,8 @@ const fs = require('fs');
 
 const SubjobRepl = require('./models/SubjobRepl');
 
+const NLConverter = require('./NLConverter');
+
 [LOG_DIR_NAME, ACCOUNTS_DIR_NAME, CHANNELS_DIR_NAME, PLUGINS_DIR_NAME, RUNNERS_DIR_NAME].forEach(dirName => {
   if (!fs.existsSync(dirName)) {
     fs.mkdirSync(dirName);
@@ -60,13 +62,23 @@ server.on('connection', (client, info) => {
     client.on('session', (accept, reject) => {
       const session = accept();
 
+      let cols = 0;
+
       session.once('pty', (accept, reject, info) => {
+        cols = info.cols;
         accept();
       });
 
       session.once('shell', (accept, reject) => {
         const stream = accept();
-        new SubjobRepl(stream).start();
+
+        const convertStream = new NLConverter();
+        convertStream.pipe(stream);
+        if (cols > 0) {
+          convertStream.columns = cols;
+        }
+
+        new SubjobRepl(stream, convertStream).start();
       });
     });
   });
