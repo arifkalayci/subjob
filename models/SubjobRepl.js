@@ -54,7 +54,8 @@ class SubjobRepl {
       output: this._outputStream,
       terminal: true,
       preview: false,
-      historySize: 1000
+      historySize: 1000,
+      breakEvalOnSigint: true
     });
 
     this._repl.setupHistory(path.join(os.homedir(), HISTORY_FILE_NAME), err => {
