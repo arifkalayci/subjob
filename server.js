@@ -69,16 +69,26 @@ server.on('connection', (client, info) => {
         accept();
       });
 
+      const convertStream = new NLConverter();
+
       session.once('shell', (accept, reject) => {
         const stream = accept();
 
-        const convertStream = new NLConverter();
         convertStream.pipe(stream);
         if (cols > 0) {
           convertStream.columns = cols;
         }
 
         new SubjobRepl(stream, convertStream).start();
+      });
+
+      session.on('window-change', (accept, reject, { rows, cols, height, width }) => {
+        convertStream.columns = cols;
+
+        // Not sure if this is required
+        if (typeof(accept) === 'function)') {
+          accept();
+        }
       });
     });
   });
