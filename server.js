@@ -85,5 +85,5 @@ server.on('connection', (client, info) => {
 });
 
 server.listen(7953, '0.0.0.0', () => {
-  console.log(`Listening on port ${server.address().port}`);
+  logger.info(`Listening on port ${server.address().port}`);
 });
