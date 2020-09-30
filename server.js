@@ -32,6 +32,8 @@ const config = JSON.parse(fs.readFileSync('config.json'));
 
 const allowedUser = Buffer.from(config.user);
 const allowedPassword = Buffer.from(config.password);
+const allowedPublicKey = ssh2.utils.parseKey(fs.readFileSync(config.publicKeyFile));
+const allowedPublicSSHKey = allowedPublicKey.getPublicSSH();
 
 const server = new ssh2.Server({
   hostKeys: [fs.readFileSync('host.key')]
@@ -45,6 +47,15 @@ server.on('connection', (client, info) => {
     }
 
     switch (ctx.method) {
+      case 'publickey':
+        if (ctx.key.algo !== allowedPublicKey.type
+              || ctx.key.data.length !== allowedPublicSSHKey.length
+              || !crypto.timingSafeEqual(ctx.key.data, allowedPublicSSHKey)
+              || (ctx.signature && allowedPublicKey.verify(ctx.blob, ctx.signature) !== true)) {
+          return ctx.reject();
+        }
+
+        break;
       case 'password':
         const password = Buffer.from(ctx.password);
         if (password.length !== allowedPassword.length || !crypto.timingSafeEqual(password, allowedPassword)) {
