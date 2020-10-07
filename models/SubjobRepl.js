@@ -16,7 +16,7 @@ class SubjobRepl {
   constructor(inputStream, outputStream) {
     this._inputStream = inputStream;
     this._outputStream = outputStream;
-    global.jobs = new Jobs();
+    global.jobs = global.jobs || new Jobs();
   }
 
   subjobContext(repl) {
