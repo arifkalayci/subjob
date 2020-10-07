@@ -66,16 +66,17 @@ class SubjobRepl {
 
     Object.assign(this._repl.context, this.subjobContext());
 
+    const self = this;
     this._repl.defineCommand('reload', {
       help: 'Reload the context with all accounts, channels, plugins and runners',
       action() {
-        this._repl.clearBufferedCommand();
-        this._outputStream.write(`Reloading context...\n`);
+        this.clearBufferedCommand();
+        self._outputStream.write(`Reloading context...\n`);
 
-        this._repl.resetContext();
-        Object.assign(this._repl.context, this.subjobContext());
+        this.resetContext();
+        Object.assign(this.context, self.subjobContext());
 
-        this._repl.displayPrompt();
+        this.displayPrompt();
       }
     });
 
