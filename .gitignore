@@ -4,5 +4,6 @@ node_modules/
 /plugins/
 /accounts/
 logs/
-config.json
+/config.json
 host.key
+/*.pub
