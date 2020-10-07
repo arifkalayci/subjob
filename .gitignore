@@ -1,8 +1,8 @@
 node_modules/
-runners/
-channels/
-plugins/
-accounts/
+/runners/
+/channels/
+/plugins/
+/accounts/
 logs/
 config.json
 host.key
