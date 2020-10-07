@@ -4,6 +4,7 @@ const path = require('path');
 const TelegramChannel = require('./TelegramChannel');
 const EmailChannel = require('./EmailChannel');
 const TwitterChannel = require('./TwitterChannel');
+const FileChannel = require('./FileChannel');
 
 const { CHANNELS_DIR_NAME } = require('../constants');
 
@@ -29,6 +30,10 @@ class Channels extends Map {
           }
           case 'twitter': {
             channel = new TwitterChannel(config.consumerKey, config.consumerSecret, config.accessTokenKey, config.accessTokenSecret);
+            break;
+          }
+          case 'file': {
+            channel = new FileChannel(config.path);
             break;
           }
           default: {
