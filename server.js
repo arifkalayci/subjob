@@ -32,11 +32,11 @@ const config = JSON.parse(fs.readFileSync('config.json'));
 
 const allowedUser = Buffer.from(config.user);
 const allowedPassword = Buffer.from(config.password);
-const allowedPublicKey = ssh2.utils.parseKey(fs.readFileSync(config.publicKeyFile));
+const allowedPublicKey = ssh2.utils.parseKey(fs.readFileSync(config.userPublicKeyFile));
 const allowedPublicSSHKey = allowedPublicKey.getPublicSSH();
 
 const server = new ssh2.Server({
-  hostKeys: [fs.readFileSync('host.key')]
+  hostKeys: [fs.readFileSync(config.serverPrivateKeyFile)]
 });
 
 server.on('connection', (client, info) => {

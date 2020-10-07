@@ -1,5 +1,6 @@
 {
+  "serverPrivateKeyFile": "host.key",
   "user": "arif",
   "password": "pass",
-  "publicKeyFile": "id_rsa.pub"
+  "userPublicKeyFile": "id_rsa.pub"
 }
